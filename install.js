@@ -1,16 +1,18 @@
 'use strict';
 // @ts-check
 
-const fs = require('node:fs');
+// nodejs12: No colon support for imports so they were removed (ex. 'node:fs' -> 'fs')
+const fs = require('fs');
+const fsExtra = require('fs-extra')
 const helper = require('./lib/chromedriver');
 const axios = require('axios');
-const path = require('node:path');
-const child_process = require('node:child_process');
-const os = require('node:os');
-const url = require('node:url');
-const https = require('node:https');
-const { promisify } = require('node:util');
-const { finished } = require('node:stream');
+const path = require('path');
+const child_process = require('child_process');
+const os = require('os');
+const url = require('url');
+const https = require('https');
+const { promisify } = require('util');
+const { finished } = require('stream');
 const extractZip = require('extract-zip');
 const { getChromeVersion } = require('@testim/chrome-version');
 const HttpsProxyAgent = require('https-proxy-agent');
@@ -288,12 +290,14 @@ async function getChromeDriverVersion(cdnUrl, legacyCdnUrl, majorVersion) {
       const requestOptions = getRequestOptions(`${cdnUrl}/chrome-for-testing/latest-versions-per-milestone.json`);
       // @ts-expect-error
       const response = await axios.request(requestOptions);
-      chromedriverVersion = response.data?.milestones[majorVersion.toString()]?.version;
+      // nodejs12: Optional chaining is not available so replaced with &&
+      chromedriverVersion = response.data && response.data.milestones[majorVersion.toString()] && response.data.milestones[majorVersion.toString()].version
     } else {
       const requestOptions = getRequestOptions(`${cdnUrl}/chrome-for-testing/last-known-good-versions.json`);
       // @ts-expect-error
       const response = await axios.request(requestOptions);
-      chromedriverVersion = response.data?.channels?.Stable?.version;
+      // nodejs12: Optional chaining is not available so replaced with &&
+      chromedriverVersion = response.data && response.data.channels && response.data.channels.Stable && response.data.channels.Stable.version
     }
     console.log(`Chromedriver version is ${chromedriverVersion}.`);
     return chromedriverVersion;
@@ -376,7 +380,13 @@ async function extractDownload(dirToExtractTo, chromedriverBinaryFilePath, downl
  * @param {string} targetPath
  */
 async function copyIntoPlace(originPath, targetPath) {
-  fs.rmSync(targetPath, { recursive: true, force: true });
+  // nodejs12: fs.rmSync is not available and fs.unlinkSync does not work with folders, so using fs-extra npm package.
+  try {
+    fsExtra.removeSync(targetPath)
+  } catch (err) {
+    console.log(`Failed deleting targetPath [${targetPath}] due to error [${err}]. Continuing...`)
+  }
+
   console.log(`Copying from ${originPath} to target path ${targetPath}`);
   fs.mkdirSync(targetPath);
 

@@ -1,3 +1,8 @@
+# Difference from node-chromedriver (https://github.com/giggio/node-chromedriver)
+This project is to support nodejs 12 code.
+When running install.js, use --experimental-modules (node --experimental-modules install.js).
+This project will not be kept up to date with the main node-chromedriver project, unless there are breaking changes. Ensure you are using --detect_chromedriver_version flag to detect your local chrome version.
+
 # ChromeDriver
 
 [![Build app](https://github.com/giggio/node-chromedriver/actions/workflows/build.yml/badge.svg)](https://github.com/giggio/node-chromedriver/actions/workflows/build.yml)

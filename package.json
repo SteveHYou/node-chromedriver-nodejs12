@@ -1,6 +1,6 @@
 {
   "name": "chromedriver-nodejs12",
-  "version": "116.0.0.1",
+  "version": "116.0.1",
   "keywords": [
     "chromedriver",
     "selenium"

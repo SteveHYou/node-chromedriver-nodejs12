@@ -65,7 +65,7 @@ if (skipDownload) {
     const chromedriverIsAvailable = await verifyIfChromedriverIsAvailableAndHasCorrectVersion(chromedriverVersion, chromedriverBinaryFilePath);
     if (!chromedriverIsAvailable) {
       console.log('Current existing ChromeDriver binary is unavailable, proceeding with download and extraction.');
-      const cdnBinariesUrl = (process.env.npm_config_chromedriver_cdnbinariesurl || process.env.CHROMEDRIVER_CDNBINARIESURL || 'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing').replace(/\/+$/, '');
+      const cdnBinariesUrl = (process.env.npm_config_chromedriver_cdnbinariesurl || process.env.CHROMEDRIVER_CDNBINARIESURL || 'https://storage.googleapis.com/chrome-for-testing-public').replace(/\/+$/, '');
       await downloadFile(useLegacyMethod ? legacyCdnUrl : cdnBinariesUrl, useLegacyMethod, downloadedFile, chromedriverVersion, platform, detectChromedriverVersion);
       await extractDownload(extractDirectory, chromedriverBinaryFilePath, downloadedFile);
     }
